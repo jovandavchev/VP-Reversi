@@ -19,26 +19,14 @@ namespace VP_Reversi
     public class Player
     {
         public string name { get; set; }
-        public Rvs rvs { get; set; }
         public Type type { get; set; }
-
+        public Color color { get; set; }
+        public bool canMove { get; set; }
 
         public Player(string n)
         {
             name = n;
-            rvs = new Rvs();
-        }
-
-
-        public void move()
-        {
-            if (type==Type.Easy )
-            {
-                Point p = rvs.generateRandom();
-                rvs.changeValue(p.X, p.Y);
-                //panel2.Invalidate(true);
-                rvs.changeTurn();
-            }
+            canMove = true;
         }
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VP_Reversi
@@ -11,14 +12,42 @@ namespace VP_Reversi
     {
         public int[][] matrix;
         public int turn;
+        public Player p1 { get; set; }
+        public Player p2 { get; set; }
         public List<Point> possibleMoves;
 
-        public Rvs(Rvs r)
+        public void move()
         {
-            matrix = r.matrix;
-            turn = r.turn;
-            possibleMoves = new List<Point>();
+            if (turn==1)
+            {
+                if (p1.canMove==false)
+                {
+                    changeTurn();
+                    move();
+                }
+            }
+
+
+            if (turn==2 && p2.type!=Type.Human )
+            {
+                if (p2.type==Type.Easy)
+                {
+                    Point p = generateRandom();
+                    if (p.X==0 && p.Y==0)
+                    {
+                        changeTurn();
+                        move();
+                    }
+                    else
+                    {
+                        changeValue(p.X, p.Y);
+                        changeTurn();
+                        move();
+                    }
+                }
+            }
         }
+
 
         public void findPossibleMoves()
         {
@@ -35,12 +64,13 @@ namespace VP_Reversi
         public Point generateRandom()
         {
             findPossibleMoves();
+            if (possibleMoves.Count == 0) return new Point(0, 0);
             Random r = new Random();
             int a = r.Next(0, possibleMoves.Count);
             return possibleMoves[a];
         }
 
-        public Rvs()
+        public Rvs(int t)
         {
             matrix = new int[9][];
             for (int i = 1; i <= 8; i++)
@@ -52,12 +82,9 @@ namespace VP_Reversi
                     else if ((i == 4 && j == 5) || (i == 5 && j == 4)) matrix[i][j] = 2;
                     else
                         matrix[i][j] = 0;
-                    //   Console.Write(matrix[i][j] + " ");
                 }
-                // Console.WriteLine();
             }
-            //Console.Read();
-            turn = 1;
+            turn = t;
             addPossibleMoves();
         }
         public int getFirst()
@@ -239,6 +266,8 @@ namespace VP_Reversi
             pen.Dispose();
             br1.Dispose(); br2.Dispose();
             br.Dispose(); br3.Dispose();
+            if (getFirst() !=2 || getSecond() != 2)
+            if (turn == 2 && p2.type != Type.Human ) Thread.Sleep(600);
         }
 
         public void changeDownLeft(int ind1, int ind2)
@@ -278,18 +307,6 @@ namespace VP_Reversi
             addPossibleMoves();
         }
 
-        public void printMatrix()
-        {
-            for (int i = 1; i <= 8; i++)
-            {
-                for (int j = 1; j <= 8; j++)
-                {
-                    Console.Write(matrix[i][j] + "\t");
-                }
-                Console.WriteLine();
-            }
-
-        }
 
         public void clearPossibleMoves()
         {

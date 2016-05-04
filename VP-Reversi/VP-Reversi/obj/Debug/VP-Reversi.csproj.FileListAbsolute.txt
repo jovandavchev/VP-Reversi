@@ -2,8 +2,8 @@ C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\bin\Debug\VP-Reversi.exe
 C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\bin\Debug\VP-Reversi.exe
 C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\bin\Debug\VP-Reversi.pdb
 C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\obj\Debug\VP-Reversi.csprojResolveAssemblyReference.cache
-C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\obj\Debug\VP_Reversi.Form1.resources
 C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\obj\Debug\VP_Reversi.Properties.Resources.resources
 C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\obj\Debug\VP-Reversi.csproj.GenerateResource.Cache
 C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\obj\Debug\VP-Reversi.exe
 C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\obj\Debug\VP-Reversi.pdb
+C:\Users\jovan\Desktop\Reversi-VP\VP-Reversi\VP-Reversi\obj\Debug\VP_Reversi.Form1.resources

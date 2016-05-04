@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+
 
 namespace VP_Reversi
 {
@@ -18,6 +20,7 @@ namespace VP_Reversi
         public Player p1;
         public Player p2;
         public Rvs rvs;
+        public bool finished;
         public Form1()
         {
             InitializeComponent();
@@ -27,6 +30,13 @@ namespace VP_Reversi
             colorp2 = Color.Red;
             p1 = new Player("Player1");
             p2 = new Player("Computer - Easy - 2");
+            finished = true;
+            base.DoubleBuffered = true;
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            UpdateStyles();
         }
 
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -42,6 +52,7 @@ namespace VP_Reversi
         public void UpdateStart()
         {
             ddl1.Text = ddl1.Items[0].ToString();
+            ddl1.Enabled = false;
             ddl2.Text = ddl2.Items[1].ToString();
             name2.Text= ddl2.Items[1].ToString();
             name2.Text += " - 2";
@@ -109,7 +120,8 @@ namespace VP_Reversi
 
         private void btnNewGame_Click(object sender, EventArgs e)
         {
-            rvs = new Rvs();
+            int turn = new Random().Next(1, 3);
+            rvs = new Rvs(turn);
             panel1.Visible = false;
             panel1.Enabled = false;
             panel2.Visible = true;
@@ -117,27 +129,32 @@ namespace VP_Reversi
             if (name1.Text.Trim().Length > 0)
             {
                 p1.name = name1.Text;
+            }
                 if (ddl1.SelectedIndex == 0) p1.type = Type.Human;
                 if (ddl1.SelectedIndex == 1) p1.type = Type.Easy;
                 if (ddl1.SelectedIndex == 2) p1.type = Type.Hard;
                 lblPrv.Text = "";
                 lblPrv.ForeColor = colorp1;
-                lblPrv.Text += p1.name + "\n" + " Coins: " + p1.rvs.getFirst();
-            }
+                lblPrv.Text += p1.name + "\n" + " Coins: " + rvs.getFirst();
+            
 
-            if (name2.Text.Trim().Length != 0)
+            if (name2.Text.Trim().Length > 0)
             {
                 p2.name = name2.Text;
+            }
                 if (ddl2.SelectedIndex == 0) p2.type = Type.Human;
                 if (ddl2.SelectedIndex == 1) p2.type = Type.Easy;
                 if (ddl2.SelectedIndex == 2) p2.type = Type.Hard;
                 lblVtor.Text = "";
-                lblVtor.Text = p2.name + "\n" + " Coins: " + p2.rvs.getSecond();
-                lblVtor.ForeColor = Color.Red;
-            }
-            
+                lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
+                lblVtor.ForeColor = colorp2;
+            p1.color = colorp1;
+            p2.color = colorp2;
+            finished = false;
+            rvs.p1 = p1;
+            rvs.p2 = p2;
             panel2.Invalidate(true);
-            //move();
+            move();
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
@@ -147,54 +164,148 @@ namespace VP_Reversi
 
         private void panel2_MouseClick(object sender, MouseEventArgs e)
         {
-          /*  if (rvs.turn==1)
+            if (finished == true) return;
+            if (!(rvs.turn == 2 && p2.type != Type.Human))
             {
-                if (p1.type != Type.Human) return;
-            }
-            if (rvs.turn==2)
-            {
-                if (p2.type != Type.Human) return;
-            } */
-            Point point = new Point(e.X, e.Y);
-            point = rvs.checkPoint(point);
-            if (point.X != 0 && point.Y != 0)
-            {
-                if (rvs.isValid(point.X, point.Y))
+                Point point = new Point(e.X, e.Y);
+                point = rvs.checkPoint(point);
+                if (point.X != 0 && point.Y != 0)
                 {
-                    rvs.changeValue(point.X, point.Y);
-                    panel2.Invalidate(true);
-                    rvs.changeTurn();
-                    p1.rvs = rvs;
-                    p2.rvs = rvs;
-                    lblPrv.Text = p1.name + "\n" + " Coins: " + p1.rvs.getFirst();
-                    lblVtor.Text = p2.name + "\n" + " Coins: " + p2.rvs.getSecond();
-                  //  move();
+                    if (rvs.isValid(point.X, point.Y))
+                    {
+                        rvs.changeValue(point.X, point.Y);
+                       // panel2.Invalidate(true);
+                        rvs.changeTurn();
+                        move();
+                    }
                 }
             }
  
         }
 
-   /*     public void move()
+        public void move()
         {
-            bool bl = false;
+            if (finished == true) return;
+
+            lblPrv.Text = p1.name + "\n" + " Coins: " + rvs.getFirst();
+            lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
+            panel2.Invalidate(true);
+            if  (p1.canMove == false && p2.canMove == false)
+            {
+                p1.canMove = true;
+                p2.canMove = true;
+                if (rvs.getFirst()>rvs.getSecond())
+                {
+                    MessageBox.Show("The game is finished. " + p1.name + " is the winner.");
+                    finished = true;
+                    panel2.Enabled = false;
+                    return;
+                }
+                else if (rvs.getFirst() < rvs.getSecond())
+                {
+                    MessageBox.Show("The game is finished. " + p2.name + " is the winner.");
+                    finished = true;
+                    panel2.Enabled = false;
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("The game is finished. It's draw.");
+                    finished = true;
+                    panel2.Enabled = false;
+                    return;
+                }
+            }
+            rvs.findPossibleMoves();
             if (rvs.turn==1)
             {
-                if (p1.type != Type.Human) bl = true;
-                p1.move();
-                rvs = p1.rvs;
+                if (rvs.noPossibleMoves())
+                {
+                    rvs.p1.canMove = false;
+                }
+                else
+                {
+                    rvs.p1.canMove = true;
+                }
+
+                if (rvs.p1.canMove==false)
+                {
+                    rvs.changeTurn();
+                    move();
+                }
+                else
+                {
+                    panel2.Enabled = true;
+                }
             }
-            else
+
+            if (rvs.turn==2)
             {
-                if (p2.type != Type.Human) bl = true;
-                p2.move();
-                rvs = p2.rvs;
+                if (rvs.noPossibleMoves())
+                {
+                    rvs.p2.canMove = false;
+                }
+                else
+                {
+                    rvs.p2.canMove = true;
+                }
+
+                if (rvs.p2.canMove == false)
+                {
+                    rvs.changeTurn();
+                    move();
+                }
+                else
+                {
+                    if (rvs.p2.type == Type.Human)
+                    {
+                        panel2.Enabled = true;
+                    }
+                    else if (rvs.p2.type==Type.Easy)
+                    {
+                        panel2.Enabled = false;
+                        Point p = rvs.generateRandom();
+                        rvs.changeValue(p.X, p.Y);
+                        rvs.changeTurn();
+                        move();
+                    }
+                }
             }
+        }
+
+        private void newToolStripButton_Click(object sender, EventArgs e)
+        {
+            newGame();
+        }
+
+        public void newGame()
+        {
+
+            // colorp1 = Color.Blue;
+            //   colorp2 = Color.Red;
+            //    p1 = new Player("Player1");
+            //  p2 = new Player("Computer - Easy - 2");
+            finished = false;
+            int turn = new Random().Next(1, 3);
+            rvs = new Rvs(turn);
+            panel1.Visible = false;
+            panel1.Enabled = false;
+            panel2.Visible = true;
+            panel2.Enabled = true;
+          //  p1.type = Type.Human;
+        //    p2.type = Type.Easy;
+            lblPrv.Text = "";
+            lblPrv.ForeColor = colorp1;
+            lblPrv.Text += p1.name + "\n" + " Coins: " + rvs.getFirst();
+            lblVtor.Text = "";
+            lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
+            lblVtor.ForeColor = colorp2;
+            p1.color = colorp1;
+            p2.color = colorp2;
+            rvs.p1 = p1;
+            rvs.p2 = p2;
             panel2.Invalidate(true);
-            p1.rvs = rvs;
-            p2.rvs = rvs;
-            lblPrv.Text = p1.name + "\n" + " Coins: " + p1.rvs.getFirst();
-            lblVtor.Text = p2.name + "\n" + " Coins: " + p2.rvs.getSecond();
-            if (bl) move();
-        } */
+            move();
+        }
     }
 }
