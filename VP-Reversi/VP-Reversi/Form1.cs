@@ -16,6 +16,7 @@ namespace VP_Reversi
 {
     public partial class Form1 : Form
     {
+        System.Windows.Forms.Timer timer;
         public Color colorp1;
         public Color colorp2;
         public Player p1;
@@ -23,6 +24,8 @@ namespace VP_Reversi
         public Rvs rvs;
         public bool finished;
         public HighScore hscore;
+        ToolTip t1;
+        string FileName;
         public Form1()
         {
             InitializeComponent();
@@ -40,6 +43,24 @@ namespace VP_Reversi
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = 1000;
+            timer.Tick += Timer_Tick;
+            t1 = new ToolTip();
+            FileName = null;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (finished==false)
+            if (p2.type == Type.Easy)
+            {
+                Point p = rvs.generateRandom();
+                rvs.changeValue(p.X, p.Y);
+                rvs.changeTurn();
+                move();
+            }
+            timer.Stop();
         }
 
         private HighScore desHighScores()
@@ -48,13 +69,13 @@ namespace VP_Reversi
             HighScore temp = null;
             try
             {
-                using (FileStream fs = File.OpenRead(path + "\\HighScore.hs"))
+                using (FileStream fs = File.OpenRead(path + "\\HighScore.hrvs"))
                 {
                     IFormatter formatter = new BinaryFormatter();
                     temp = (HighScore)formatter.Deserialize(fs);
                 }
 
-                File.Delete(path + "\\HighScore.hs");
+                File.Delete(path + "\\HighScore.hrvs");
 
                 return temp;
             }
@@ -68,7 +89,7 @@ namespace VP_Reversi
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-            using (FileStream fs = File.Create(path + "\\HighScore.hs"))
+            using (FileStream fs = File.Create(path + "\\HighScore.hrvs"))
             {
                 IFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(fs, hs);
@@ -87,6 +108,7 @@ namespace VP_Reversi
 
         public void UpdateStart()
         {
+            changePanel1();
             ddl1.Text = ddl1.Items[0].ToString();
             ddl1.Enabled = false;
             ddl2.Text = ddl2.Items[1].ToString();
@@ -158,10 +180,7 @@ namespace VP_Reversi
         {
             int turn = new Random().Next(1, 3);
             rvs = new Rvs(turn);
-            panel1.Visible = false;
-            panel1.Enabled = false;
-            panel2.Visible = true;
-            panel2.Enabled = true;
+            changePanel2();
             if (name1.Text.Trim().Length > 0)
             {
                 p1.name = name1.Text;
@@ -201,6 +220,8 @@ namespace VP_Reversi
         private void panel2_MouseClick(object sender, MouseEventArgs e)
         {
             if (finished == true) return;
+            if (rvs.turn == 2 && rvs.p1.canMove == false && rvs.p2.type != Type.Human) move();
+            else
             if (!(rvs.turn == 2 && p2.type != Type.Human))
             {
                 Point point = new Point(e.X, e.Y);
@@ -222,18 +243,16 @@ namespace VP_Reversi
         public void move()
         {
             if (finished == true) return;
-
+            Invalidate(true);
             lblPrv.Text = p1.name + "\n" + " Coins: " + rvs.getFirst();
             lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
-            Invalidate(true);
-            if  (p1.canMove == false && p2.canMove == false)
+            if  (rvs.p1.canMove == false && rvs.p2.canMove == false)
             {
                 p1.canMove = true;
                 p2.canMove = true;
                 if (rvs.getFirst()>rvs.getSecond())
                 {
                     finished = true;
-                    panel2.Enabled = false;
                     if (rvs.p2.type==Type.Human)
                     {
                         MessageBox.Show("The game is finished. " + p1.name + " is the winner.", "Reversi", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -253,14 +272,12 @@ namespace VP_Reversi
                 {
                     MessageBox.Show("The game is finished. " + p2.name + " is the winner.","Reversi",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     finished = true;
-                    panel2.Enabled = false;
                     return;
                 }
                 else
                 {
                     MessageBox.Show("The game is finished. It's draw.","Reversi",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     finished = true;
-                    panel2.Enabled = false;
                     return;
                 }
             }
@@ -283,7 +300,7 @@ namespace VP_Reversi
                 }
                 else
                 {
-                    panel2.Enabled = true;
+                   // panel2.Enabled = true;
                 }
             }
 
@@ -307,18 +324,20 @@ namespace VP_Reversi
                 {
                     if (rvs.p2.type == Type.Human)
                     {
-                        panel2.Enabled = true;
+                      //  panel2.Enabled = true;
                     }
                     else if (rvs.p2.type==Type.Easy)
                     {
-                        panel2.Enabled = false;
-                        Point p = rvs.generateRandom();
-                        rvs.changeValue(p.X, p.Y);
-                        rvs.changeTurn();
-                        move();
+                        timer.Start();
+                       // panel2.Enabled = false;
+                   //     Point p = rvs.generateRandom();
+                     //   rvs.changeValue(p.X, p.Y);
+                       // rvs.changeTurn();
+                        //move();
                     }
                 }
             }
+            Invalidate(true);
         }
 
         private void newToolStripButton_Click(object sender, EventArgs e)
@@ -328,7 +347,7 @@ namespace VP_Reversi
 
         public void newGame()
         {
-
+            FileName = null;
             // colorp1 = Color.Blue;
             //   colorp2 = Color.Red;
             //    p1 = new Player("Player1");
@@ -336,10 +355,7 @@ namespace VP_Reversi
             finished = false;
             int turn = new Random().Next(1, 3);
             rvs = new Rvs(turn);
-            panel1.Visible = false;
-            panel1.Enabled = false;
-            panel2.Visible = true;
-            panel2.Enabled = true;
+            changePanel2();
           //  p1.type = Type.Human;
         //    p2.type = Type.Easy;
             lblPrv.Text = "";
@@ -358,12 +374,184 @@ namespace VP_Reversi
 
         private void btnHighScores_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(hscore.ToString());
+            changePanel3();
+            listBox1.Items.Clear();
+            hscore.list.Sort();
+            hscore.list.Reverse();
+            foreach (RankedPlayers p in hscore.list)
+            {
+                listBox1.Items.Add(p);
+            }
+            
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             serHighScores(hscore);
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnReset_MouseHover(object sender, EventArgs e)
+        {
+            t1.Show("Start a game",btnReset);
+        }
+
+        private void btnSave_MouseHover(object sender, EventArgs e)
+        {
+            t1.Show("Save the current game", btnSave);
+        }
+
+        private void btnGoBack_MouseHover(object sender, EventArgs e)
+        {
+            t1.Show("Go back to the main menu", btnGoBack);
+        }
+
+        private void btnBack2_Click(object sender, EventArgs e)
+        {
+            changePanel1();
+        }
+
+        public void changePanel1()
+        {
+            this.Text = "Reversi";
+            panel1.Visible = true;
+            panel1.Enabled = true;
+            panel2.Visible = false;
+            panel2.Enabled = false;
+            panel3.Visible = false;
+            panel3.Enabled = false;
+        }
+
+        public void changePanel2()
+        {
+            this.Text = "Reversi - New game";
+            panel1.Visible = false;
+            panel1.Enabled = false;
+            panel2.Visible = true;
+            panel2.Enabled = true;
+            panel3.Enabled = false;
+            panel3.Visible = false;
+        }
+
+
+
+        public void changePanel3()
+        {
+            this.Text = "Reversi - Highscores";
+            panel2.Visible = false;
+            panel2.Enabled = false;
+            panel1.Visible = false;
+            panel1.Enabled = false;
+            panel3.Enabled = true;
+            panel3.Visible = true;
+        }
+
+        private void btnGoBack_Click(object sender, EventArgs e)
+        {
+            changePanel1();
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            FileName = null;
+            finished = false;
+            int turn = new Random().Next(1, 3);
+            rvs = new Rvs(turn);
+            lblPrv.Text = "";
+            lblPrv.ForeColor = colorp1;
+            lblPrv.Text += p1.name + "\n" + " Coins: " + rvs.getFirst();
+            lblVtor.Text = "";
+            lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
+            lblVtor.ForeColor = colorp2;
+            p1.color = colorp1;
+            p2.color = colorp2;
+            rvs.p1 = p1;
+            rvs.p2 = p2;
+            Invalidate(true);
+            move();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            saveGame();
+        }
+
+        public void saveGame()
+        {
+            if (FileName ==null)
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "Reversi (*.rvs)|*.rvs";
+                sfd.Title = "Save game";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    FileName = sfd.FileName;
+                }
+            }
+            if (FileName!=null)
+            {
+                using (FileStream fs = new FileStream(FileName, FileMode.Create))
+                {
+                    IFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(fs, rvs);
+                }
+            }
+        }
+
+        private void btnLoadGame_Click(object sender, EventArgs e)
+        {
+            loadGame();
+        }
+
+        public void loadGame()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter= "Reversi (*.rvs)|*.rvs";
+            ofd.Title = "Load game";
+            if (ofd.ShowDialog()==DialogResult.OK)
+            {
+                FileName = ofd.FileName;
+                try
+                {
+                    using (FileStream fs = new FileStream(FileName, FileMode.Open))
+                    {
+                        IFormatter formatter = new BinaryFormatter();
+                        rvs = (Rvs)formatter.Deserialize(fs);
+                        updateGame();
+                        changePanel2();
+                        this.Text = "Reversi - " + FileName;
+                        Invalidate(true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Could not read file: " + FileName);
+                    FileName = null;
+                    return;
+                }
+                
+            }
+        }
+
+        public void updateGame()
+        {
+            p1 = rvs.p1;
+            p2 = rvs.p2;
+            colorp1 = rvs.p1.color;
+            colorp2 = rvs.p2.color;
+            finished = false;
+            lblPrv.Text = "";
+            lblPrv.ForeColor = colorp1;
+            lblPrv.Text += p1.name + "\n" + " Coins: " + rvs.getFirst();
+            lblVtor.Text = "";
+            lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
+            lblVtor.ForeColor = colorp2;
+            Invalidate(true);
+            move();
         }
     }
 }

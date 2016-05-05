@@ -88,6 +88,8 @@ namespace VP_Reversi
                         matrix[i][j] = 0;
                 }
             }
+            p1 = null;
+            p2 = null;
             turn = t;
             addPossibleMoves();
         }
@@ -270,8 +272,8 @@ namespace VP_Reversi
             pen.Dispose();
             br1.Dispose(); br2.Dispose();
             br.Dispose(); br3.Dispose();
-            if (getFirst() !=2 || getSecond() != 2)
-            if (turn == 2 && p2.type != Type.Human ) Thread.Sleep(600);
+          //  if (getFirst() !=2 || getSecond() != 2)
+        //    if (turn == 2 && p2.type != Type.Human ) Thread.Sleep(1000);
         }
 
         public void changeDownLeft(int ind1, int ind2)

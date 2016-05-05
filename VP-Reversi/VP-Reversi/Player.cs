@@ -11,14 +11,14 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VP_Reversi
 {
-     [Serializable]
+    [Serializable]
     public enum Type
     {
         Human,
         Easy,
         Hard
     }
-
+    [Serializable]
     public class Player
     {
         public string name { get; set; }
