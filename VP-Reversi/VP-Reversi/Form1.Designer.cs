@@ -241,6 +241,7 @@
             this.btnHighScores.TabIndex = 3;
             this.btnHighScores.Text = "High scores";
             this.btnHighScores.UseVisualStyleBackColor = true;
+            this.btnHighScores.Click += new System.EventHandler(this.btnHighScores_Click);
             // 
             // btnLoadGame
             // 
@@ -315,6 +316,7 @@
             this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Reversi";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

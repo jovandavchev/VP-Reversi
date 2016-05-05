@@ -5,9 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VP_Reversi
 {
+    [Serializable]
     public class Rvs
     {
         public int[][] matrix;

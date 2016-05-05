@@ -5,10 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Threading;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VP_Reversi
 {
-
+     [Serializable]
     public enum Type
     {
         Human,

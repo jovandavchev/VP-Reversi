@@ -9,7 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VP_Reversi
 {
@@ -21,9 +22,11 @@ namespace VP_Reversi
         public Player p2;
         public Rvs rvs;
         public bool finished;
+        public HighScore hscore;
         public Form1()
         {
             InitializeComponent();
+            hscore = desHighScores();
             panel2.Enabled = false;
             this.DoubleBuffered = true;
             colorp1 = Color.Blue;
@@ -37,6 +40,39 @@ namespace VP_Reversi
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
+        }
+
+        private HighScore desHighScores()
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            HighScore temp = null;
+            try
+            {
+                using (FileStream fs = File.OpenRead(path + "\\HighScore.hs"))
+                {
+                    IFormatter formatter = new BinaryFormatter();
+                    temp = (HighScore)formatter.Deserialize(fs);
+                }
+
+                File.Delete(path + "\\HighScore.hs");
+
+                return temp;
+            }
+            catch(FileNotFoundException)
+            {
+                return new HighScore();
+            }
+        }
+
+        private void serHighScores(HighScore hs)
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            using (FileStream fs = File.Create(path + "\\HighScore.hs"))
+            {
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, hs);
+            }
         }
 
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -153,7 +189,7 @@ namespace VP_Reversi
             finished = false;
             rvs.p1 = p1;
             rvs.p2 = p2;
-            panel2.Invalidate(true);
+            Invalidate(true);
             move();
         }
 
@@ -189,28 +225,40 @@ namespace VP_Reversi
 
             lblPrv.Text = p1.name + "\n" + " Coins: " + rvs.getFirst();
             lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
-            panel2.Invalidate(true);
+            Invalidate(true);
             if  (p1.canMove == false && p2.canMove == false)
             {
                 p1.canMove = true;
                 p2.canMove = true;
                 if (rvs.getFirst()>rvs.getSecond())
                 {
-                    MessageBox.Show("The game is finished. " + p1.name + " is the winner.");
                     finished = true;
                     panel2.Enabled = false;
+                    if (rvs.p2.type==Type.Human)
+                    {
+                        MessageBox.Show("The game is finished. " + p1.name + " is the winner.", "Reversi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                       DialogResult dr= MessageBox.Show("The game is finished. " + p1.name + " is the winner.", "Reversi", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                       if (dr == DialogResult.Yes)
+                        {
+                            hscore.addItem(new RankedPlayers(rvs.p1.name, rvs.getFirst(), rvs.getSecond()));
+                            serHighScores(hscore);
+                        }
+                    }
                     return;
                 }
                 else if (rvs.getFirst() < rvs.getSecond())
                 {
-                    MessageBox.Show("The game is finished. " + p2.name + " is the winner.");
+                    MessageBox.Show("The game is finished. " + p2.name + " is the winner.","Reversi",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     finished = true;
                     panel2.Enabled = false;
                     return;
                 }
                 else
                 {
-                    MessageBox.Show("The game is finished. It's draw.");
+                    MessageBox.Show("The game is finished. It's draw.","Reversi",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     finished = true;
                     panel2.Enabled = false;
                     return;
@@ -304,8 +352,18 @@ namespace VP_Reversi
             p2.color = colorp2;
             rvs.p1 = p1;
             rvs.p2 = p2;
-            panel2.Invalidate(true);
+            Invalidate(true);
             move();
+        }
+
+        private void btnHighScores_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(hscore.ToString());
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            serHighScores(hscore);
         }
     }
 }
