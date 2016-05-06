@@ -30,7 +30,6 @@ namespace VP_Reversi
         {
             InitializeComponent();
             hscore = desHighScores();
-            panel2.Enabled = false;
             this.DoubleBuffered = true;
             colorp1 = Color.Blue;
             colorp2 = Color.Red;
@@ -255,14 +254,19 @@ namespace VP_Reversi
                     finished = true;
                     if (rvs.p2.type==Type.Human)
                     {
-                        MessageBox.Show("The game is finished. " + p1.name + " is the winner.", "Reversi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        DialogResult dr = MessageBox.Show("The game is finished. " + p1.name + " is the winner. Do you want your result to be added to the Highscore list?", "Reversi", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                        if (dr == DialogResult.Yes)
+                        {
+                            hscore.addItem(new RankedPlayers(rvs.p1.name, rvs.p2.name, rvs.getFirst(), rvs.getSecond()));
+                            serHighScores(hscore);
+                        }
                     }
-                    else
+                    else 
                     {
-                       DialogResult dr= MessageBox.Show("The game is finished. " + p1.name + " is the winner.", "Reversi", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                       DialogResult dr= MessageBox.Show("The game is finished. " + p1.name + " is the winner. Do you want your result to be added to the Highscore list?", "Reversi", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                        if (dr == DialogResult.Yes)
                         {
-                            hscore.addItem(new RankedPlayers(rvs.p1.name, rvs.getFirst(), rvs.getSecond()));
+                            hscore.addItem(new RankedPlayers(rvs.p1.name,rvs.p2.name, rvs.getFirst(), rvs.getSecond()));
                             serHighScores(hscore);
                         }
                     }
@@ -270,8 +274,20 @@ namespace VP_Reversi
                 }
                 else if (rvs.getFirst() < rvs.getSecond())
                 {
-                    MessageBox.Show("The game is finished. " + p2.name + " is the winner.","Reversi",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     finished = true;
+                    if (rvs.p2.type == Type.Human)
+                    {
+                        DialogResult dr = MessageBox.Show("The game is finished. " + p2.name + " is the winner. Do you want your result to be added to the Highscore list?", "Reversi", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                        if (dr == DialogResult.Yes)
+                        {
+                            hscore.addItem(new RankedPlayers(rvs.p2.name, rvs.p1.name, rvs.getSecond(), rvs.getFirst()));
+                            serHighScores(hscore);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("The game is finished. " + p2.name + " is the winner.", "Reversi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                     return;
                 }
                 else
@@ -298,10 +314,7 @@ namespace VP_Reversi
                     rvs.changeTurn();
                     move();
                 }
-                else
-                {
-                   // panel2.Enabled = true;
-                }
+
             }
 
             if (rvs.turn==2)
@@ -374,6 +387,11 @@ namespace VP_Reversi
 
         private void btnHighScores_Click(object sender, EventArgs e)
         {
+            if (hscore.list.Count==0)
+            {
+                MessageBox.Show("No highscores to show!","Empty list",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
             changePanel3();
             listBox1.Items.Clear();
             hscore.list.Sort();
@@ -387,7 +405,7 @@ namespace VP_Reversi
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            serHighScores(hscore);
+            
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -418,6 +436,8 @@ namespace VP_Reversi
         public void changePanel1()
         {
             this.Text = "Reversi";
+            colorp1 = panelColor1.BackColor;
+            colorp2 = panelColor2.BackColor;
             panel1.Visible = true;
             panel1.Enabled = true;
             panel2.Visible = false;
@@ -452,6 +472,11 @@ namespace VP_Reversi
 
         private void btnGoBack_Click(object sender, EventArgs e)
         {
+            if ((rvs.getFirst() == 2 && rvs.getSecond() == 2) || (finished))
+            {
+                changePanel1();
+                return;
+            }
             DialogResult dr = MessageBox.Show("Do you want to save the game before going back?", "Back to main menu", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
             if (dr == DialogResult.Yes)
             {
@@ -467,7 +492,8 @@ namespace VP_Reversi
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-           DialogResult dr= MessageBox.Show("Do you want to save the game?", "Reset", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+            if (rvs.getFirst() == 2 && rvs.getSecond() == 2) return;
+            DialogResult dr= MessageBox.Show("Do you want to save the game?", "Reset", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
             if (dr == DialogResult.Yes)
             {
                 saveGame();
@@ -570,6 +596,22 @@ namespace VP_Reversi
             lblVtor.ForeColor = colorp2;
             Invalidate(true);
             move();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (panel2.Enabled == true && panel2.Visible == true)
+            {
+                if (rvs.getFirst() != 2 || rvs.getSecond() != 2)
+                {
+                    DialogResult dr = MessageBox.Show("Do you want to save the game before quiting?", "Exit game", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (dr == DialogResult.Yes)
+                    {
+                        saveGame();
+                    }
+                }
+            }
+            serHighScores(hscore);
         }
     }
 }

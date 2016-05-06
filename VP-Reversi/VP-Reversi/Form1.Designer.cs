@@ -42,23 +42,23 @@
             this.btnHighScores = new System.Windows.Forms.Button();
             this.btnLoadGame = new System.Windows.Forms.Button();
             this.btnNewGame = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnGoBack = new System.Windows.Forms.Button();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.btnReset = new System.Windows.Forms.Button();
             this.lblVtor = new System.Windows.Forms.Label();
             this.lblPrv = new System.Windows.Forms.Label();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.btnGoBack = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnReset = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.btnBack2 = new System.Windows.Forms.Button();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -211,6 +211,15 @@
             this.btnNewGame.UseVisualStyleBackColor = true;
             this.btnNewGame.Click += new System.EventHandler(this.btnNewGame_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::VP_Reversi.Properties.Resources.hd1;
+            this.pictureBox1.Location = new System.Drawing.Point(22, 21);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(363, 121);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.btnGoBack);
@@ -228,34 +237,6 @@
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             this.panel2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseClick);
             // 
-            // lblVtor
-            // 
-            this.lblVtor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVtor.Location = new System.Drawing.Point(305, 105);
-            this.lblVtor.Name = "lblVtor";
-            this.lblVtor.Size = new System.Drawing.Size(111, 66);
-            this.lblVtor.TabIndex = 1;
-            this.lblVtor.Text = "label2";
-            this.lblVtor.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // lblPrv
-            // 
-            this.lblPrv.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPrv.Location = new System.Drawing.Point(305, 40);
-            this.lblPrv.Name = "lblPrv";
-            this.lblPrv.Size = new System.Drawing.Size(111, 65);
-            this.lblPrv.TabIndex = 0;
-            this.lblPrv.Text = "label1";
-            this.lblPrv.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // panel5
-            // 
-            this.panel5.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.panel5.Location = new System.Drawing.Point(306, 174);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(110, 1);
-            this.panel5.TabIndex = 4;
-            // 
             // btnGoBack
             // 
             this.btnGoBack.Image = global::VP_Reversi.Properties.Resources.back_button_1;
@@ -266,6 +247,14 @@
             this.btnGoBack.UseVisualStyleBackColor = true;
             this.btnGoBack.Click += new System.EventHandler(this.btnGoBack_Click);
             this.btnGoBack.MouseHover += new System.EventHandler(this.btnGoBack_MouseHover);
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.panel5.Location = new System.Drawing.Point(306, 174);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(110, 1);
+            this.panel5.TabIndex = 4;
             // 
             // btnSave
             // 
@@ -289,14 +278,25 @@
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             this.btnReset.MouseHover += new System.EventHandler(this.btnReset_MouseHover);
             // 
-            // pictureBox1
+            // lblVtor
             // 
-            this.pictureBox1.Image = global::VP_Reversi.Properties.Resources.hd1;
-            this.pictureBox1.Location = new System.Drawing.Point(22, 21);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(363, 121);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.lblVtor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVtor.Location = new System.Drawing.Point(305, 105);
+            this.lblVtor.Name = "lblVtor";
+            this.lblVtor.Size = new System.Drawing.Size(111, 66);
+            this.lblVtor.TabIndex = 1;
+            this.lblVtor.Text = "label2";
+            this.lblVtor.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblPrv
+            // 
+            this.lblPrv.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPrv.Location = new System.Drawing.Point(305, 40);
+            this.lblPrv.Name = "lblPrv";
+            this.lblPrv.Size = new System.Drawing.Size(111, 65);
+            this.lblPrv.TabIndex = 0;
+            this.lblPrv.Text = "label1";
+            this.lblPrv.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // panel3
             // 
@@ -307,17 +307,6 @@
             this.panel3.Size = new System.Drawing.Size(416, 358);
             this.panel3.TabIndex = 7;
             // 
-            // listBox1
-            // 
-            this.listBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 20;
-            this.listBox1.Location = new System.Drawing.Point(63, 17);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(285, 264);
-            this.listBox1.TabIndex = 0;
-            // 
             // btnBack2
             // 
             this.btnBack2.Image = global::VP_Reversi.Properties.Resources.back_button_1;
@@ -327,6 +316,18 @@
             this.btnBack2.TabIndex = 6;
             this.btnBack2.UseVisualStyleBackColor = true;
             this.btnBack2.Click += new System.EventHandler(this.btnBack2_Click);
+            // 
+            // listBox1
+            // 
+            this.listBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 16;
+            this.listBox1.Location = new System.Drawing.Point(63, 17);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.listBox1.Size = new System.Drawing.Size(285, 260);
+            this.listBox1.TabIndex = 0;
             // 
             // Form1
             // 
@@ -340,15 +341,15 @@
             this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Reversi";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
 

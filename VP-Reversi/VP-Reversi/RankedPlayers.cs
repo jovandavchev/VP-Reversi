@@ -13,13 +13,15 @@ namespace VP_Reversi
     public class RankedPlayers : IComparable<RankedPlayers>
     {
         public string name;
+        public string name2;
         public string result;
         public int winnerpoints;
         public int loserpoints;
 
-        public RankedPlayers(string s, int a, int b)
+        public RankedPlayers(string s,string s2, int a, int b)
         {
             name = s;
+            name2 = s2;
             winnerpoints = a;
             loserpoints = b;
             result = a + " - " + b;
@@ -39,7 +41,7 @@ namespace VP_Reversi
 
         public override string ToString()
         {
-            return name + "     " + result;
+            return string.Format("{0} vs {1}   ( {2} )", name, name2, result);
         }
     }
 }
