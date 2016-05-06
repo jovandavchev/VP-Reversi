@@ -51,6 +51,7 @@ namespace VP_Reversi
             timer.Tick += Timer_Tick;
             t1 = new ToolTip();
             FileName = null;
+            this.Icon = Properties.Resources.reversiicon;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
