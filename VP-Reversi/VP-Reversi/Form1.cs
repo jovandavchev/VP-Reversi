@@ -621,10 +621,15 @@ namespace VP_Reversi
             {
                 if (rvs.getFirst() != 2 || rvs.getSecond() != 2)
                 {
-                    DialogResult dr = MessageBox.Show("Do you want to save the game before quiting?", "Exit game", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    DialogResult dr = MessageBox.Show("Do you want to save the game before quiting?", "Exit game", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                     if (dr == DialogResult.Yes)
                     {
                         saveGame();
+                    }
+                    if (dr ==DialogResult.Cancel)
+                    {
+                        e.Cancel = true;
+                        return;
                     }
                 }
             }
