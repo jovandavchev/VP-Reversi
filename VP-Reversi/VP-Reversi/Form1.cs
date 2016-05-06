@@ -452,27 +452,45 @@ namespace VP_Reversi
 
         private void btnGoBack_Click(object sender, EventArgs e)
         {
-            changePanel1();
+            DialogResult dr = MessageBox.Show("Do you want to save the game before going back?", "Back to main menu", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+            if (dr == DialogResult.Yes)
+            {
+                saveGame();
+                changePanel1();
+            }
+            else if (dr == DialogResult.No)
+            {
+                changePanel1();
+            }
+           
         }
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-            FileName = null;
-            finished = false;
-            int turn = new Random().Next(1, 3);
-            rvs = new Rvs(turn);
-            lblPrv.Text = "";
-            lblPrv.ForeColor = colorp1;
-            lblPrv.Text += p1.name + "\n" + " Coins: " + rvs.getFirst();
-            lblVtor.Text = "";
-            lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
-            lblVtor.ForeColor = colorp2;
-            p1.color = colorp1;
-            p2.color = colorp2;
-            rvs.p1 = p1;
-            rvs.p2 = p2;
-            Invalidate(true);
-            move();
+           DialogResult dr= MessageBox.Show("Do you want to save the game?", "Reset", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+            if (dr == DialogResult.Yes)
+            {
+                saveGame();
+            }
+            else if(dr==DialogResult.No)
+            {
+                FileName = null;
+                finished = false;
+                int turn = new Random().Next(1, 3);
+                rvs = new Rvs(turn);
+                lblPrv.Text = "";
+                lblPrv.ForeColor = colorp1;
+                lblPrv.Text += p1.name + "\n" + " Coins: " + rvs.getFirst();
+                lblVtor.Text = "";
+                lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
+                lblVtor.ForeColor = colorp2;
+                p1.color = colorp1;
+                p2.color = colorp2;
+                rvs.p1 = p1;
+                rvs.p2 = p2;
+                Invalidate(true);
+                move();
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
