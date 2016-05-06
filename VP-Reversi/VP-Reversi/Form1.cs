@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Media;
+using System.Resources;
 
 namespace VP_Reversi
 {
@@ -26,9 +28,11 @@ namespace VP_Reversi
         public HighScore hscore;
         ToolTip t1;
         string FileName;
+        SoundPlayer sp;
         public Form1()
         {
             InitializeComponent();
+            sp = new SoundPlayer(Properties.Resources.clicksound);
             hscore = desHighScores();
             this.DoubleBuffered = true;
             colorp1 = Color.Blue;
@@ -51,13 +55,26 @@ namespace VP_Reversi
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (finished==false)
-            if (p2.type == Type.Easy)
+            if (finished == false)
             {
-                Point p = rvs.generateRandom();
-                rvs.changeValue(p.X, p.Y);
-                rvs.changeTurn();
-                move();
+                if (p2.type == Type.Easy)
+                {
+                    Point p = rvs.generateRandom();
+                    rvs.changeValue(p.X, p.Y);
+                    rvs.changeTurn();
+                    move();
+                }
+                if (p2.type == Type.Hard)
+                {
+                    //Rvs temp = DeepClone(rvs);
+                    // Point p = temp.generateBestMove();
+                    Point p = rvs.bestMove();
+
+                        rvs.changeValue(p.X, p.Y);
+                        rvs.changeTurn();
+                    move();
+                }
+                sp.Play();
             }
             timer.Stop();
         }
@@ -229,6 +246,7 @@ namespace VP_Reversi
                 {
                     if (rvs.isValid(point.X, point.Y))
                     {
+                        sp.Play();
                         rvs.changeValue(point.X, point.Y);
                        // panel2.Invalidate(true);
                         rvs.changeTurn();
@@ -347,6 +365,12 @@ namespace VP_Reversi
                      //   rvs.changeValue(p.X, p.Y);
                        // rvs.changeTurn();
                         //move();
+                    }
+
+                    else if (rvs.p2.type==Type.Hard)
+                    {
+                        timer.Start();
+                        
                     }
                 }
             }
@@ -493,29 +517,21 @@ namespace VP_Reversi
         private void btnReset_Click(object sender, EventArgs e)
         {
             if (rvs.getFirst() == 2 && rvs.getSecond() == 2) return;
+            if (finished==true)
+            {
+                newGame(); return;
+
+            }
             DialogResult dr= MessageBox.Show("Do you want to save the game?", "Reset", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
             if (dr == DialogResult.Yes)
             {
                 saveGame();
+                newGame();
             }
             else if(dr==DialogResult.No)
             {
-                FileName = null;
-                finished = false;
-                int turn = new Random().Next(1, 3);
-                rvs = new Rvs(turn);
-                lblPrv.Text = "";
-                lblPrv.ForeColor = colorp1;
-                lblPrv.Text += p1.name + "\n" + " Coins: " + rvs.getFirst();
-                lblVtor.Text = "";
-                lblVtor.Text = p2.name + "\n" + " Coins: " + rvs.getSecond();
-                lblVtor.ForeColor = colorp2;
-                p1.color = colorp1;
-                p2.color = colorp2;
-                rvs.p1 = p1;
-                rvs.p2 = p2;
-                Invalidate(true);
-                move();
+                newGame();
+
             }
         }
 
@@ -571,7 +587,7 @@ namespace VP_Reversi
                         Invalidate(true);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception )
                 {
                     MessageBox.Show("Could not read file: " + FileName);
                     FileName = null;
@@ -612,6 +628,18 @@ namespace VP_Reversi
                 }
             }
             serHighScores(hscore);
+        }
+
+        public static Rvs DeepClone(Rvs obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (Rvs)formatter.Deserialize(ms);
+            }
         }
     }
 }

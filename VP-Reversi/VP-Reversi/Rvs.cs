@@ -19,6 +19,18 @@ namespace VP_Reversi
         public Player p1 { get; set; }
         public Player p2 { get; set; }
         public List<Point> possibleMoves;
+        public Point hardPoint;
+        public static readonly int[,] evalTable=   {
+            {0,99,  -8,  8,  6,  6,  8,  -8, 99},
+            {0,99,  -8,  8,  6,  6,  8,  -8, 99},
+            {0,-8, -24, -4, -3, -3, -4, -24, -8},
+            { 0,8,  -4,  7,  4,  4,  7,  -4,  8},
+            { 0,6,  -3,  4,  0,  0,  4,  -3,  6},
+            { 0,6,  -3,  4,  0,  0,  4,  -3,  6},
+            { 0,8,  -4,  7,  4,  4,  7,  -4,  8},
+            {0,-8, -24, -4, -3, -3, -4, -24, -8},
+            {0,99,  -8,  8,  6,  6,  8,  -8, 99}
+    };
 
         public void move()
         {
@@ -74,6 +86,92 @@ namespace VP_Reversi
             return possibleMoves[a];
         }
 
+        public Point bestMove()
+        {
+            findPossibleMoves();
+            Point p = possibleMoves[0];
+            int result = evalTable[possibleMoves[0].X, possibleMoves[0].Y];
+            foreach (Point temp in possibleMoves )
+            {
+                if (evalTable[temp.X,temp.Y]>result)
+                {
+                    p = temp;
+                    result = evalTable[temp.X, temp.Y];
+                }
+            }
+            return p;
+        }
+
+        public Point generateBestMove()
+        {
+            findPossibleMoves();
+            hardPoint = possibleMoves[0];
+             minimax(0, turn);
+            return hardPoint;
+        }
+
+        public int minimax(int depth, int turn)
+        {
+            if (p1.canMove == false && p2.canMove == false)
+            {
+                if (getSecond() > getFirst()) return 1;
+                else if (getSecond() < getFirst()) return -1;
+                else return 0;
+            }
+            findPossibleMoves();
+            int min = 100000; int max = -100000;
+
+            for (int i = 0; i < possibleMoves.Count; i++)
+            {
+                Point point = possibleMoves[i];
+                if (turn == 2)
+                {
+                    changeValue(point.X, point.Y);
+                    findPossibleMoves();
+                    int currentScore = minimax(depth + 1, 1);
+                    max = Math.Max(currentScore, max);
+
+                    if (currentScore >= 0)
+                    {
+                        if (depth == 0)
+                        {
+                            hardPoint = point;
+                        }
+                    }
+                    if (currentScore == 1)
+                    {
+                        matrix[point.X][point.Y] = 3; break;
+                    }
+                    if (i == possibleMoves.Count - 1 && max < 0)
+                    {
+                        if (depth == 0)
+                        {
+                            hardPoint = point;
+                        }
+                    }
+                }
+
+                else if (turn == 1)
+                {
+                    changeValue(point.X, point.Y);
+                    findPossibleMoves();
+                    int currentScore = minimax(depth + 1, 2);
+                    min = Math.Min(currentScore, min);
+                    if (min == -1)
+                    {
+                        matrix[point.X][point.Y] = 3;
+                        break;
+                    }
+                }
+
+                matrix[point.X][point.Y] = 3;
+
+            }
+            return turn == 2 ? max : min;
+
+
+        }
+
         public Rvs(int t)
         {
             matrix = new int[9][];
@@ -88,10 +186,13 @@ namespace VP_Reversi
                         matrix[i][j] = 0;
                 }
             }
+            hardPoint = Point.Empty;
             p1 = null;
             p2 = null;
             turn = t;
             addPossibleMoves();
+
+
         }
         public int getFirst()
         {
@@ -435,6 +536,8 @@ namespace VP_Reversi
             if (result && result2) return true;
             return false;
         }
+
+       
 
         public bool findDownRight(int ind1, int ind2)
         {
