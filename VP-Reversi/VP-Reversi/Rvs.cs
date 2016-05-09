@@ -89,8 +89,8 @@ namespace VP_Reversi
         public Point bestMove()
         {
             findPossibleMoves();
-            Point p = possibleMoves[0];
-            int result = evalTable[possibleMoves[0].X, possibleMoves[0].Y];
+            Point p = Point.Empty;
+            int result = -13300;
             foreach (Point temp in possibleMoves )
             {
                 if (evalTable[temp.X,temp.Y]>result)

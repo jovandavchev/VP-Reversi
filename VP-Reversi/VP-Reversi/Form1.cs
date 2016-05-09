@@ -61,6 +61,14 @@ namespace VP_Reversi
                 if (p2.type == Type.Easy)
                 {
                     Point p = rvs.generateRandom();
+                    if (p.IsEmpty)
+                    {
+                        rvs.p2.canMove = false;
+                        rvs.changeTurn();
+                        move();
+                        timer.Stop();
+                        return;
+                    }
                     rvs.changeValue(p.X, p.Y);
                     rvs.changeTurn();
                     sp.Play();
@@ -71,8 +79,15 @@ namespace VP_Reversi
                     //Rvs temp = DeepClone(rvs);
                     // Point p = temp.generateBestMove();
                     Point p = rvs.bestMove();
-
-                        rvs.changeValue(p.X, p.Y);
+                    if (p.IsEmpty)
+                    {
+                        rvs.p2.canMove = false;
+                        rvs.changeTurn();
+                        move();
+                        timer.Stop();
+                        return;
+                    }
+                    rvs.changeValue(p.X, p.Y);
                         rvs.changeTurn();
                     sp.Play();
                     move();
@@ -327,14 +342,10 @@ namespace VP_Reversi
                 {
                     rvs.p1.canMove = false;
                     rvs.changeTurn();
-<<<<<<< HEAD
                     MessageBox.Show("Vleva pred move");
                     move();
                     return;
-                    //MessageBox.Show("vleva posle move");
-=======
-                    move();
->>>>>>> d8dc1da94f046b2c874e429e56545acaf908de0d
+
                 }
                 else
                 {
@@ -615,7 +626,7 @@ namespace VP_Reversi
         {
             if (panel2.Enabled == true && panel2.Visible == true)
             {
-                if (rvs.getFirst() != 2 || rvs.getSecond() != 2)
+                if ((rvs.getFirst() != 2 || rvs.getSecond() != 2) && finished==false)
                 {
                     DialogResult dr = MessageBox.Show("Do you want to save the game before quiting?", "Exit game", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                     if (dr == DialogResult.Yes)
