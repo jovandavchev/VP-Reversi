@@ -74,6 +74,7 @@ namespace VP_Reversi
                     sp.Play();
                     timer.Stop();
                     move();
+                    return;
                 }
                 if (p2.type == Type.Hard)
                 {
@@ -93,6 +94,7 @@ namespace VP_Reversi
                     sp.Play();
                     timer.Stop();
                     move();
+                    return;
                 }
                 
             } else
