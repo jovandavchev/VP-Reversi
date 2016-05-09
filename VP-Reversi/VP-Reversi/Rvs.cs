@@ -32,37 +32,6 @@ namespace VP_Reversi
             {0,99,  -8,  8,  6,  6,  8,  -8, 99}
     };
 
-        public void move()
-        {
-            if (turn==1)
-            {
-                if (p1.canMove==false)
-                {
-                    changeTurn();
-                    move();
-                }
-            }
-
-
-            if (turn==2 && p2.type!=Type.Human )
-            {
-                if (p2.type==Type.Easy)
-                {
-                    Point p = generateRandom();
-                    if (p.X==0 && p.Y==0)
-                    {
-                        changeTurn();
-                        move();
-                    }
-                    else
-                    {
-                        changeValue(p.X, p.Y);
-                        changeTurn();
-                        move();
-                    }
-                }
-            }
-        }
 
 
         public void findPossibleMoves()
@@ -258,7 +227,7 @@ namespace VP_Reversi
 
         public bool noPossibleMoves()
         {
-            //addPossibleMoves();
+            addPossibleMoves();
             for (int i = 1; i <= 8; i++)
             {
                 for (int j = 1; j <= 8; j++)

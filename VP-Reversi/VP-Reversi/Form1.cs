@@ -65,13 +65,14 @@ namespace VP_Reversi
                     {
                         rvs.p2.canMove = false;
                         rvs.changeTurn();
-                        move();
                         timer.Stop();
+                        move();
                         return;
                     }
                     rvs.changeValue(p.X, p.Y);
                     rvs.changeTurn();
                     sp.Play();
+                    timer.Stop();
                     move();
                 }
                 if (p2.type == Type.Hard)
@@ -83,17 +84,18 @@ namespace VP_Reversi
                     {
                         rvs.p2.canMove = false;
                         rvs.changeTurn();
-                        move();
                         timer.Stop();
+                        move();
                         return;
                     }
                     rvs.changeValue(p.X, p.Y);
                         rvs.changeTurn();
                     sp.Play();
+                    timer.Stop();
                     move();
                 }
                 
-            }
+            } else
             timer.Stop();
         }
 
@@ -353,7 +355,7 @@ namespace VP_Reversi
 
             }
 
-            if (rvs.turn==2)
+            else
             {
                 if (rvs.noPossibleMoves())
                 {
@@ -367,13 +369,13 @@ namespace VP_Reversi
                     rvs.p2.canMove = true;
                     if (rvs.p2.type != Type.Human)
                     {
-                        if (rvs.possibleMoves.Count == 0)
-                        {
-                            rvs.p2.canMove = false;
-                            rvs.changeTurn();
-                            move();
-                            return;
-                        }
+                        //if (rvs.possibleMoves.Count == 0)
+                        //{
+                       //     rvs.p2.canMove = false;
+                      //      rvs.changeTurn();
+                     //       move();
+                    //        return;
+                   //     }
                         timer.Start();
                     }
                     return;
