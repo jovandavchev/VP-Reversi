@@ -327,10 +327,14 @@ namespace VP_Reversi
                 {
                     rvs.p1.canMove = false;
                     rvs.changeTurn();
+<<<<<<< HEAD
                     MessageBox.Show("Vleva pred move");
                     move();
                     return;
                     //MessageBox.Show("vleva posle move");
+=======
+                    move();
+>>>>>>> d8dc1da94f046b2c874e429e56545acaf908de0d
                 }
                 else
                 {
