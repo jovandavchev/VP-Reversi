@@ -255,8 +255,7 @@ namespace VP_Reversi
         private void panel2_MouseClick(object sender, MouseEventArgs e)
         {
             if (finished == true) return;
-            if (rvs.turn == 2 && rvs.p1.canMove == false && rvs.p2.type != Type.Human) { move(); return; }
-            else
+
             if (!(rvs.turn == 2 && p2.type != Type.Human))
             {
                 Point point = new Point(e.X, e.Y);
@@ -342,7 +341,6 @@ namespace VP_Reversi
                 {
                     rvs.p1.canMove = false;
                     rvs.changeTurn();
-                    MessageBox.Show("Vleva pred move");
                     move();
                     return;
 
@@ -372,6 +370,7 @@ namespace VP_Reversi
                         if (rvs.possibleMoves.Count == 0)
                         {
                             rvs.p2.canMove = false;
+                            rvs.changeTurn();
                             move();
                             return;
                         }
@@ -391,16 +390,10 @@ namespace VP_Reversi
         public void newGame()
         {
             FileName = null;
-            // colorp1 = Color.Blue;
-            //   colorp2 = Color.Red;
-            //    p1 = new Player("Player1");
-            //  p2 = new Player("Computer - Easy - 2");
             finished = false;
             int turn = new Random().Next(1, 3);
             rvs = new Rvs(turn);
             changePanel2();
-          //  p1.type = Type.Human;
-        //    p2.type = Type.Easy;
             lblPrv.Text = "";
             lblPrv.ForeColor = colorp1;
             lblPrv.Text += p1.name + "\n" + " Coins: " + rvs.getFirst();
@@ -544,6 +537,7 @@ namespace VP_Reversi
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            if (finished==false)
             saveGame();
         }
 
