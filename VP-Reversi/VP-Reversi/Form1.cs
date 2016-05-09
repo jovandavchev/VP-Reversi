@@ -322,6 +322,8 @@ namespace VP_Reversi
                 if (rvs.noPossibleMoves())
                 {
                     rvs.p1.canMove = false;
+                    rvs.changeTurn();
+                    move();
                 }
                 else
                 {
