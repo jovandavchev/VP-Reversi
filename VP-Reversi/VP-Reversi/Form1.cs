@@ -63,6 +63,7 @@ namespace VP_Reversi
                     Point p = rvs.generateRandom();
                     rvs.changeValue(p.X, p.Y);
                     rvs.changeTurn();
+                    sp.Play();
                     move();
                 }
                 if (p2.type == Type.Hard)
@@ -73,9 +74,10 @@ namespace VP_Reversi
 
                         rvs.changeValue(p.X, p.Y);
                         rvs.changeTurn();
+                    sp.Play();
                     move();
                 }
-                sp.Play();
+                
             }
             timer.Stop();
         }
@@ -227,6 +229,7 @@ namespace VP_Reversi
             rvs.p2 = p2;
             Invalidate(true);
             move();
+            return;
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
@@ -237,7 +240,7 @@ namespace VP_Reversi
         private void panel2_MouseClick(object sender, MouseEventArgs e)
         {
             if (finished == true) return;
-            if (rvs.turn == 2 && rvs.p1.canMove == false && rvs.p2.type != Type.Human) move();
+            if (rvs.turn == 2 && rvs.p1.canMove == false && rvs.p2.type != Type.Human) { move(); return; }
             else
             if (!(rvs.turn == 2 && p2.type != Type.Human))
             {
@@ -249,9 +252,10 @@ namespace VP_Reversi
                     {
                         sp.Play();
                         rvs.changeValue(point.X, point.Y);
-                       // panel2.Invalidate(true);
+                        // panel2.Invalidate(true);
                         rvs.changeTurn();
                         move();
+                        return;
                     }
                 }
             }
@@ -322,16 +326,16 @@ namespace VP_Reversi
                 if (rvs.noPossibleMoves())
                 {
                     rvs.p1.canMove = false;
+                    rvs.changeTurn();
+                    MessageBox.Show("Vleva pred move");
+                    move();
+                    return;
+                    //MessageBox.Show("vleva posle move");
                 }
                 else
                 {
                     rvs.p1.canMove = true;
-                }
-
-                if (rvs.p1.canMove==false)
-                {
-                    rvs.changeTurn();
-                    move();
+                    return;
                 }
 
             }
@@ -341,38 +345,24 @@ namespace VP_Reversi
                 if (rvs.noPossibleMoves())
                 {
                     rvs.p2.canMove = false;
+                    rvs.changeTurn();
+                    move();
+                    return;
                 }
                 else
                 {
                     rvs.p2.canMove = true;
-                }
-
-                if (rvs.p2.canMove == false)
-                {
-                    rvs.changeTurn();
-                    move();
-                }
-                else
-                {
-                    if (rvs.p2.type == Type.Human)
+                    if (rvs.p2.type != Type.Human)
                     {
-                      //  panel2.Enabled = true;
-                    }
-                    else if (rvs.p2.type==Type.Easy)
-                    {
+                        if (rvs.possibleMoves.Count == 0)
+                        {
+                            rvs.p2.canMove = false;
+                            move();
+                            return;
+                        }
                         timer.Start();
-                       // panel2.Enabled = false;
-                   //     Point p = rvs.generateRandom();
-                     //   rvs.changeValue(p.X, p.Y);
-                       // rvs.changeTurn();
-                        //move();
                     }
-
-                    else if (rvs.p2.type==Type.Hard)
-                    {
-                        timer.Start();
-                        
-                    }
+                    return;
                 }
             }
             Invalidate(true);
@@ -408,6 +398,7 @@ namespace VP_Reversi
             rvs.p2 = p2;
             Invalidate(true);
             move();
+            return;
         }
 
         private void btnHighScores_Click(object sender, EventArgs e)
@@ -613,6 +604,7 @@ namespace VP_Reversi
             lblVtor.ForeColor = colorp2;
             Invalidate(true);
             move();
+            return;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
